@@ -1,0 +1,14 @@
+[tool.vercel]
+entrypoint = "config.wsgi:application"
+
+[project]
+name = "nexus-cms-api"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = [
+    "Django>=5.0.0",
+    "djangorestframework>=3.15.0",
+    "django-cors-headers>=4.0.0",
+    "markdown>=3.6",
+    "whitenoise>=6.6.0",
+]

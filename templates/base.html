@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Nexus &mdash; Decoupled Headless CMS{% endblock %}</title>
+  
+  <!-- Typography: Warm Playfair Display & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <!-- Global Editorial Navigation -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand-wrapper">
+        <a href="{% url 'home' %}" class="brand-logo" aria-label="Nexus Home">
+          Nexus<span class="dot">.</span>
+        </a>
+        <span class="brand-tag">Headless Publishing Desk</span>
+      </div>
+
+      <nav class="nav-actions">
+        <a href="/api/articles/" class="nav-link-api" target="_blank" rel="noopener">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="16 18 22 12 16 6"></polyline>
+            <polyline points="8 6 2 12 8 18"></polyline>
+          </svg>
+          API Feed
+        </a>
+        <a href="/admin/" class="nav-btn-admin">
+          <span>Editorial Desk</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="7" y1="17" x2="17" y2="7"></line>
+            <polyline points="7 7 17 7 17 17"></polyline>
+          </svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main View Block -->
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Editorial Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <div class="footer-logo">Nexus<span style="color: var(--accent-terracotta);">.</span></div>
+          <p class="footer-desc">
+            A high-craft headless content management system engineered with Django, Django REST Framework, and tactile editorial aesthetics.
+          </p>
+        </div>
+
+        <div class="footer-links-group">
+          <div>
+            <h4 class="footer-column-title">API Endpoints</h4>
+            <ul class="footer-links-list">
+              <li><a href="/api/articles/" class="footer-link" target="_blank">/api/articles/</a></li>
+              <li><a href="/api/categories/" class="footer-link" target="_blank">/api/categories/</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="footer-column-title">Management</h4>
+            <ul class="footer-links-list">
+              <li><a href="/admin/" class="footer-link">Editorial Portal</a></li>
+              <li><a href="{% url 'home' %}" class="footer-link">Publication Home</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>&copy; Nexus Editorial Desk. Built with Django REST Framework & SQLite.</span>
+        <span>Tactile Warm Beige & Terracotta Edition</span>
+      </div>
+    </div>
+  </footer>
+
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

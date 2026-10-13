@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+
+{% block title %}Nexus &mdash; Curated Essays on Architecture & Craft{% endblock %}
+
+{% block content %}
+<div class="container">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-tag">The Nexus Publication</div>
+    <h1 class="hero-title">Thoughtful essays on craft, systems architecture, and design.</h1>
+    <p class="hero-description">
+      A decoupled publishing laboratory exploring tactile ergonomics, headless data pipelines, and enduring software engineering.
+    </p>
+  </section>
+
+  <!-- Category Pills Filter Bar -->
+  <section class="filter-bar">
+    <div class="pills-container" id="categoryPills">
+      <a href="{% url 'home' %}" 
+         class="pill-item {% if not selected_category_slug %}active{% endif %}"
+         data-category="all">
+        <span>All Disciplines</span>
+        <span class="pill-count">{{ total_published_count }}</span>
+      </a>
+
+      {% for cat in categories %}
+      <a href="?category={{ cat.slug }}" 
+         class="pill-item {% if selected_category_slug == cat.slug %}active{% endif %}"
+         data-category="{{ cat.slug }}">
+        <span>{{ cat.name }}</span>
+        <span class="pill-count">{{ cat.article_count }}</span>
+      </a>
+      {% endfor %}
+    </div>
+
+    <div class="filter-meta">
+      <span id="articleCountText">Showing {{ articles|length }} published piece{{ articles|length|pluralize }}</span>
+    </div>
+  </section>
+
+  <!-- Articles Grid -->
+  {% if articles %}
+  <section class="articles-grid" id="articlesGrid">
+    {% for article in articles %}
+    <article class="article-card" data-category="{{ article.category.slug }}">
+      <div>
+        <div class="card-top">
+          <span class="badge-category">{{ article.category.name }}</span>
+          <span class="read-time">{{ article.reading_time }} min read</span>
+        </div>
+
+        <h2 class="card-title">
+          <a href="{% url 'article_detail' slug=article.slug %}">{{ article.title }}</a>
+        </h2>
+
+        <p class="card-excerpt">
+          {{ article.excerpt }}
+        </p>
+      </div>
+
+      <div class="card-footer">
+        <div class="author-info">
+          <div class="author-avatar" title="{{ article.author.get_full_name|default:article.author.username }}">
+            {{ article.author.username|slice:":2"|upper }}
+          </div>
+          <div class="author-meta">
+            <span class="author-name">{{ article.author.get_full_name|default:article.author.username }}</span>
+            <time class="article-date" datetime="{{ article.created_at|date:'Y-m-d' }}">
+              {{ article.created_at|date:"M j, Y" }}
+            </time>
+          </div>
+        </div>
+
+        <a href="{% url 'article_detail' slug=article.slug %}" class="read-link" aria-label="Read {{ article.title }}">
+          Read story &rarr;
+        </a>
+      </div>
+    </article>
+    {% endfor %}
+  </section>
+  {% else %}
+  <div class="empty-state">
+    <h3 class="empty-title">No articles found in this category</h3>
+    <p class="empty-desc">There are currently no published essays matching the selected category filter.</p>
+    <a href="{% url 'home' %}" class="pill-item active" style="display: inline-flex;">View All Articles</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  // Seamless client-side filter enhancement
+  document.addEventListener('DOMContentLoaded', () => {
+    const pills = document.querySelectorAll('.pill-item');
+    const cards = document.querySelectorAll('.article-card');
+    const countText = document.getElementById('articleCountText');
+
+    pills.forEach(pill => {
+      pill.addEventListener('click', (e) => {
+        // Allow ctrl+click or meta+click to open in new tab as standard link
+        if (e.metaKey || e.ctrlKey) return;
+
+        e.preventDefault();
+        const targetCategory = pill.getAttribute('data-category');
+
+        // Update active class
+        pills.forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+
+        // Filter cards
+        let visibleCount = 0;
+        cards.forEach(card => {
+          const cardCat = card.getAttribute('data-category');
+          if (targetCategory === 'all' || cardCat === targetCategory) {
+            card.style.display = 'flex';
+            visibleCount++;
+          } else {
+            card.style.display = 'none';
+          }
+        });
+
+        // Update count label
+        if (countText) {
+          countText.textContent = `Showing ${visibleCount} published piece${visibleCount === 1 ? '' : 's'}`;
+        }
+
+        // Smoothly update browser URL without page reload
+        const newUrl = targetCategory === 'all' ? window.location.pathname : `?category=${targetCategory}`;
+        window.history.pushState({ category: targetCategory }, '', newUrl);
+      });
+    });
+
+    // Handle browser back/forward buttons
+    window.addEventListener('popstate', (e) => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const cat = urlParams.get('category') || 'all';
+      const matchingPill = document.querySelector(`.pill-item[data-category="${cat}"]`);
+      if (matchingPill) {
+        matchingPill.click();
+      }
+    });
+  });
+</script>
+{% endblock %}

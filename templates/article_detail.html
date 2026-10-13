@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ article.title }} &mdash; Nexus{% endblock %}
+
+{% block extra_head %}
+<meta name="description" content="{{ article.excerpt }}">
+{% endblock %}
+
+{% block content %}
+<article class="reader-container">
+  <!-- Back navigation -->
+  <nav class="back-nav">
+    <a href="{% url 'home' %}" class="back-link">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="19" y1="12" x2="5" y2="12"></line>
+        <polyline points="12 19 5 12 12 5"></polyline>
+      </svg>
+      <span>Back to all essays</span>
+    </a>
+  </nav>
+
+  <!-- Article Header -->
+  <header class="reader-header">
+    <div class="reader-meta-top">
+      <span class="badge-category">{{ article.category.name }}</span>
+      <span class="read-time">{{ article.reading_time }} min read</span>
+    </div>
+
+    <h1 class="reader-title">{{ article.title }}</h1>
+
+    <div class="reader-byline">
+      <div class="byline-author">
+        <div class="byline-avatar">
+          {{ article.author.username|slice:":2"|upper }}
+        </div>
+        <div class="byline-details">
+          <span class="byline-name">{{ article.author.get_full_name|default:article.author.username }}</span>
+          <div class="byline-meta-row">
+            <time datetime="{{ article.created_at|date:'Y-m-d' }}">{{ article.created_at|date:"F j, Y" }}</time>
+            <span class="byline-dot">&bull;</span>
+            <span>Category: {{ article.category.name }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Article Formatted Content Body -->
+  <div class="article-body">
+    {{ article.rendered_content|safe }}
+  </div>
+
+  <!-- Reader Footer & Related Articles -->
+  <footer class="reader-footer">
+    {% if recent_articles %}
+    <h3 class="related-title">Continue Reading</h3>
+    <div class="related-grid">
+      {% for item in recent_articles %}
+      <div class="related-card">
+        <div>
+          <span class="badge-category" style="font-size: 0.7rem; padding: 2px 8px; margin-bottom: 8px;">{{ item.category.name }}</span>
+          <h4 class="related-card-title">
+            <a href="{% url 'article_detail' slug=item.slug %}">{{ item.title }}</a>
+          </h4>
+        </div>
+        <div class="related-card-meta">
+          <span>{{ item.reading_time }} min read &bull; {{ item.created_at|date:"M j" }}</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div style="margin-top: 40px; text-align: center;">
+      <a href="{% url 'home' %}" class="pill-item active" style="display: inline-flex; padding: 10px 24px;">
+        &larr; Return to Publication Index
+      </a>
+    </div>
+  </footer>
+</article>
+{% endblock %}

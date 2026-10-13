@@ -44,20 +44,9 @@ Once running, visit:
 
 ---
 
-## 🔑 Default Admin Credentials
+##  Default Admin Credentials
 
 After running `python manage.py seed_data`:
 - **Username**: `admin`
 - **Password**: `adminpassword123`
 - **Email**: `admin@nexus.local`
-
----
-
-## 🌐 Deploying Online (No Local Setup Required for Viewers)
-
-If you want people to view the UI directly in their browser without downloading code or running commands:
-1. Push this repository to GitHub.
-2. Connect it to a hosting platform like **Render** ([render.com](https://render.com)) or **Railway** ([railway.app](https://railway.app)).
-3. Set the build command: `pip install -r requirements.txt && python manage.py migrate && python manage.py seed_data`
-4. Set the start command: `python manage.py runserver 0.0.0.0:$PORT` (or `gunicorn config.wsgi`)
-5. Share the live public URL!
